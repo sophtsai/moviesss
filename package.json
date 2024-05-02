@@ -1,0 +1,18 @@
+{
+  "name": "moviesss",
+  "version": "1.0.0",
+  "description": "Submitted by: Sophie Tsai (directory id: stsai123) \\ Group Members: Sophie Tsai (stsai123), Akash Patil (apatil17), Jessica Nguyen (nguyen15) \\ App Description: Allows users to rate and write personal reviews for movies \\ YouTube Video Link: \\ APIs: TMDB (https://developer.themoviedb.org/) \\ Contact Email: stsai123@terpmail.umd.edu",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "ejs": "^3.1.10",
+    "express": "^4.19.2",
+    "mongodb": "^6.5.0"
+  }
+}
