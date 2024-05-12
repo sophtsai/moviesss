@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>My Reviews</title>
+    <%- include('./styles'); %>
+  </head>
+
+  <body>
+    <%- include('./navBar'); %>
+    <div class="bodyContainer"><%- reviewList %></div>
+  </body>
+</html>
+
+<style>
+  .bodyContainer {
+    margin: 2.5rem;
+  }
+
+  .listContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+  }
+
+  .reviewCard {
+    width: 75%;
+    display: flex;
+    flex-direction: row;
+    gap: 2rem;
+    padding: 2rem;
+    border-radius: 20px;
+    background-color: var(--movie-light-purple);
+  }
+
+  .reviewCard img {
+    width: 150px;
+    height: 225px;
+    object-fit: cover;
+    border-radius: 10px;
+  }
+
+  .reviewInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .reviewTitle {
+    margin-top: 0.5rem;
+  }
+</style>
