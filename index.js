@@ -8,13 +8,6 @@ app.use(express.static("public"));
 
 require("dotenv").config({ path: path.resolve(__dirname, "./.env") });
 
-const uri = process.env.MONGO_DB_URI;
-const databaseAndCollection = {
-  db: process.env.MONGO_DB_NAME,
-  collection: process.env.MONGO_COLLECTION,
-};
-const { MongoClient, ServerApiVersion } = require("mongodb");
-
 function populateMovies(movieList) {
   let displayMovies = `<div class="listContainer">`;
 
@@ -24,6 +17,46 @@ function populateMovies(movieList) {
   });
 
   return (displayMovies += "</div>");
+}
+
+function populateReviews(reviewList) {
+  let displayReviews = `<div class="listContainer">`;
+
+  reviewList.forEach((review) => {
+    displayReviews += `<div class="reviewCard"><img src="${review.movieImage}"/><div class="reviewInfo"><h3><b>${review.movieTitle}</b></h3><div><b>Date Reviewed: </b>${review.reviewDate}</div><div class="reviewTitle"><b>Review:</b></div><div>${review.review}</div></div></div>`;
+  });
+
+  return (displayReviews += "</div>");
+}
+
+/********** MONGODB functions **********/
+const uri = process.env.MONGO_DB_URI;
+const databaseAndCollection = {
+  db: process.env.MONGO_DB_NAME,
+  collection: process.env.MONGO_COLLECTION,
+};
+const { MongoClient, ServerApiVersion } = require("mongodb");
+
+// Retrieve user data by email
+async function getUser(email) {
+  const client = new MongoClient(uri, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    serverApi: ServerApiVersion.v1,
+  });
+  try {
+    await client.connect();
+
+    const result = await client
+      .db(databaseAndCollection.db)
+      .collection(databaseAndCollection.collection)
+      .findOne({ email: email });
+    return result;
+  } catch (e) {
+    console.error(e);
+  } finally {
+    await client.close();
+  }
 }
 
 /********** TMDB API functions **********/
@@ -97,6 +130,17 @@ app.get("/movies", async (request, response) => {
     topRatedMovies: topRatedMovies,
   };
   response.render("movies", variables);
+});
+
+app.get("/myreviews", async (request, response) => {
+  let userData = await getUser("abc@gmail.com"); // TODO: Replace with logged-in user's email
+
+  let reviewList = populateReviews(userData.reviews);
+
+  let variables = {
+    reviewList: reviewList,
+  };
+  response.render("myReviews", variables);
 });
 
 console.log(`Web server started and running at http://localhost:${portNumber}`);
