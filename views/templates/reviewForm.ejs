@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+    <header>
+        <title>Movie Review Form</title>
+        <%- include('./styles'); %>
+    </header>
+    <body class="main-container">
+        <div>
+            <a href="/movies" class="back-btn">Back</a>
+        </div>
+        <div class="inner">
+        <form method="post" action="/reviewForm?movieTitle=<%= movieTitle %>" class="form-container">
+            <h1 id="form-header">Movie Review Form</h1>
+            <div class="movie">
+                <img src="<%= image %>" alt="Movie Image" width="15%" height="auto" class="img">
+                <div class="movie-info">
+                    <input type="hidden" name="movieTitle" value="<%= movieTitle %>">
+                    <p class="info"><%- releaseDate %></p>
+                    <p id="desc" class="info"><%- desc %></p>
+                </div>
+            </div>
+
+            <label for="review" class="info">Review</label>
+            <textarea col="10" rows="8" id="text-field"></textarea>
+
+            <div class="btn-container">
+                <button type="reset" id="reset">Clear Review</button>
+                <button type="submit" id="submit">Submit Review</button>
+            </div>
+        </form>
+    </div>
+    </body>
+</html>
+
+<style>
+.main-container {
+    background-color: var(--movie-blue);
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+.info {
+    font-size: 1.25rem;
+}
+
+.back-btn, .back-btn:visited {
+    font-family: "Limelight", "Times New Roman", serif;
+    text-decoration-line: none;
+    color: black;
+    padding-left: 30px;
+    font-size: 2rem;
+}
+
+.inner {
+    display: flex;
+    align-items: center;
+}
+
+.form-container {
+    display: flex;
+    flex-direction: column;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: var(--movie-white);
+    width: 75%;
+    height: fit-content;
+    border-radius: 30px;
+    padding-left: 30px;
+    padding-right: 30px;
+    padding-bottom: 30px;
+}
+
+#form-header {
+    text-align: center;
+}
+
+.movie {
+    display: flex;
+    margin-bottom: 3%;
+}
+
+.img {
+    border-radius: 15px;
+    object-fit: cover;
+}
+
+.movie-info {
+    display: flex;
+    flex-direction: column;
+    margin-left: 30px;
+}
+
+#desc {
+    text-wrap: wrap;
+}
+
+#text-field {
+    border-radius: 20px;
+    margin-top: 5px;
+    padding: 10px;
+    margin-bottom: 30px;
+    font-size: 1.25rem;
+}
+
+.btn-container {
+    display: flex;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#reset, #submit {
+    font-family: "Limelight", "Times New Roman", serif;
+    border-radius: 15px;
+    border-style: none;
+    padding: 10px;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+#reset {
+    background-color: var(--movie-dark-purple);
+    color: var(--movie-white);
+    margin-right: 30px;
+}
+
+#submit {
+    background-color: var(--movie-gold);
+    color: black;
+}
+</style>
