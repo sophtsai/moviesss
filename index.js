@@ -12,7 +12,8 @@ function populateMovies(movieList) {
   let displayMovies = `<div class="listContainer">`;
 
   movieList.forEach((movie) => {
-    let moviePoster = "https://image.tmdb.org/t/p/w500" + movie.poster_path;
+    let moviePoster = getImage(movie);
+    // "https://image.tmdb.org/t/p/w500" + movie.poster_path;
     displayMovies += `<div class="movieCard"><a href="/reviewForm?title=${movie.title}"><img src="${moviePoster}"/><p>${movie.title}</p></a></div>`;
   });
 
@@ -29,36 +30,6 @@ function populateReviews(reviewList) {
   return (displayReviews += "</div>");
 }
 
-/********** MONGODB functions **********/
-const uri = process.env.MONGO_DB_URI;
-const databaseAndCollection = {
-  db: process.env.MONGO_DB_NAME,
-  collection: process.env.MONGO_COLLECTION,
-};
-const { MongoClient, ServerApiVersion } = require("mongodb");
-
-// Retrieve user data by email
-async function getUser(email) {
-  const client = new MongoClient(uri, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    serverApi: ServerApiVersion.v1,
-  });
-  try {
-    await client.connect();
-
-    const result = await client
-      .db(databaseAndCollection.db)
-      .collection(databaseAndCollection.collection)
-      .findOne({ email: email });
-    return result;
-  } catch (e) {
-    console.error(e);
-  } finally {
-    await client.close();
-  }
-}
-
 function populateReviews(reviewList) {
   let displayReviews = `<div class="listContainer">`;
 
@@ -67,6 +38,12 @@ function populateReviews(reviewList) {
   });
 
   return (displayReviews += "</div>");
+}
+
+// gets image using the first result found by getMoveByName and accessing the poster_path. Returns src link.
+function getImage(movie) {
+  let path = movie.poster_path;
+  return `https://image.tmdb.org/t/p/w500/${path}`;
 }
 
 /********** MONGODB functions **********/
@@ -108,7 +85,7 @@ const options = {
   },
 };
 
-// Get list of popular movies
+// get list of popular movies
 async function getPopularMovies() {
   try {
     const result = await fetch(
@@ -122,7 +99,7 @@ async function getPopularMovies() {
   }
 }
 
-// Get list of now playing movies
+// get list of now playing movies
 async function getNowPlayingMovies() {
   try {
     const result = await fetch(
@@ -136,7 +113,7 @@ async function getNowPlayingMovies() {
   }
 }
 
-// Get list of top rated movies
+// get list of top rated movies
 async function getTopRatedMovies() {
   try {
     const result = await fetch(
@@ -150,7 +127,7 @@ async function getTopRatedMovies() {
   }
 }
 
-//gets the movie json given the name and returns the first result.
+// gets the movie json given the name and returns the first result.
 async function getMovieByName(name) {
   let q = name.toString().replaceAll(" ", "%20"); //deal with spaces
   const results = await fetch(
@@ -161,16 +138,11 @@ async function getMovieByName(name) {
   return json.results[0];
 }
 
-//gets image using the first result found by getMoveByName and accessing the poster_path. Returns src link.
-function getImage(movie) {
-  let path = movie.poster_path;
-  return `https://image.tmdb.org/t/p/w500/${path}`;
-}
-
 app.get("/", (request, response) => {
   response.render("index");
 });
 
+// displaying popular, now playing, and top rated movies
 app.get("/movies", async (request, response) => {
   let popularList = await getPopularMovies();
   let popularMovies = populateMovies(popularList);
@@ -189,7 +161,8 @@ app.get("/movies", async (request, response) => {
   response.render("movies", variables);
 });
 
-app.get("/myreviews", async (request, response) => {
+// displaying user's reviews
+app.get("/myReviews", async (request, response) => {
   let userData = await getUser("abc@gmail.com"); // TODO: Replace with logged-in user's email
 
   let reviewList = populateReviews(userData.reviews);
@@ -200,10 +173,10 @@ app.get("/myreviews", async (request, response) => {
   response.render("myReviews", variables);
 });
 
-//displaying auto-filled information of selected movie in review form
+// displaying auto-filled information of selected movie in review form
 app.get("/reviewForm", async (request, response) => {
   let q = request.query.title;
-  let movie = await getMovieByName(q); //returns json object of movie
+  let movie = await getMovieByName(q); // returns json object of movie
 
   let variables = {
     image: getImage(movie),
@@ -214,11 +187,11 @@ app.get("/reviewForm", async (request, response) => {
   response.render("reviewForm", variables);
 });
 
-//send review to backend
+// send review to backend
 app.post("/reviewForm", (request, response) => {
-  let movie = request.query.movieTitle; // Retrieve movie title from form data
+  let movie = request.query.movieTitle; // retrieve movie title from form data
 
-  //add review to user
+  // TODO: add review to user
   /* Implement here */
 
   response.render("reviewConfirmation", { movieTitle: movie });
