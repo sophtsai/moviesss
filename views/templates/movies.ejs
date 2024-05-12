@@ -9,15 +9,43 @@
   <body>
     <%- include('./navBar'); %>
     <div class="bodyContainer">
-      <h1>Trending Movies</h1>
-      <h1>Now Playing Movies</h1>
       <h1>Popular Movies</h1>
+      <%- popularMovies %>
+      <h1>Now Playing Movies</h1>
+      <%- playingMovies %>
+      <h1>Top Rated Movies</h1>
+      <%- topRatedMovies %>
     </div>
   </body>
 </html>
 
 <style>
   .bodyContainer {
-    margin: 2rem;
+    margin: 2.5rem;
+  }
+
+  .listContainer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .movieCard {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    width: 200px;
+    text-align: center;
+    font-weight: bold;
+  }
+
+  .movieCard img {
+    width: 200px;
+    height: 300px;
+    object-fit: cover;
+    border-radius: 10px;
   }
 </style>
