@@ -10,13 +10,13 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 require("dotenv").config({ path: path.resolve(__dirname, "./.env") });
 
-function populateMovies(movieList) {
+function populateMovies(email, movieList) {
   let displayMovies = `<div class="listContainer">`;
 
   movieList.forEach((movie) => {
     let moviePoster = getImage(movie);
     // "https://image.tmdb.org/t/p/w500" + movie.poster_path;
-    displayMovies += `<div class="movieCard"><a href="/reviewForm?title=${movie.title}"><img src="${moviePoster}"/><p>${movie.title}</p></a></div>`;
+    displayMovies += `<div class="movieCard"><a href="/reviewForm?email=${email}&title=${movie.title}"><img src="${moviePoster}"/><p>${movie.title}</p></a></div>`;
   });
 
   return (displayMovies += "</div>");
@@ -192,13 +192,13 @@ app.get("/movies", async (request, response) => {
   let urlEmail = "?email=" + email;
 
   let popularList = await getPopularMovies();
-  let popularMovies = populateMovies(popularList);
+  let popularMovies = populateMovies(email, popularList);
 
   let nowPlayingList = await getNowPlayingMovies();
-  let nowPlayingMovies = populateMovies(nowPlayingList);
+  let nowPlayingMovies = populateMovies(email, nowPlayingList);
 
   let topRatedList = await getTopRatedMovies();
-  let topRatedMovies = populateMovies(topRatedList);
+  let topRatedMovies = populateMovies(email, topRatedList);
 
   let variables = {
     popularMovies: popularMovies,
@@ -230,14 +230,15 @@ app.get("/myReviews", async (request, response) => {
 
 // displaying auto-filled information of selected movie in review form
 app.get("/reviewForm", async (request, response) => {
-  let q = request.query.title;
-  let movie = await getMovieByName(q); // returns json object of movie
+  let { title, email } = request.query;
+  let movie = await getMovieByName(title); // returns json object of movie
 
   let variables = {
     image: getImage(movie),
     movieTitle: movie.title,
     releaseDate: new Date(movie.release_date).toLocaleDateString(),
     desc: movie.overview,
+    email,
   };
   response.render("reviewForm", variables);
 });
