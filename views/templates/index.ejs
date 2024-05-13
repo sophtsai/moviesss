@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+  <header>
+    <title>Movie Review Form</title>
+    <%- include('./styles'); %>
+  </header>
+  <body>
+    <div class="main-container">
+      <h1>Welcome to Moviesss</h1>
+      <div class="btn-container">
+        <a href="/login"><button id="login">Log In</button></a>
+        <a href="/signup"><button id="signup">Sign Up</button></a>
+      </div>
+    </div>
+  </body>
+</html>
+
+<style>
+  body {
+    background-color: var(--movie-blue);
+    display: flex;
+    text-align: center;
+  }
+
+  .main-container {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .main-container h1 {
+    font-size: 5rem;
+    width: 550px;
+    padding-top: 50px;
+    padding-bottom: 100px;
+  }
+
+  .btn-container {
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 35px;
+  }
+
+  .btn-container button {
+    font-family: "Limelight", "Times New Roman", serif;
+    border-radius: 15px;
+    border-style: none;
+    padding: 5px;
+    cursor: pointer;
+    width: 300px;
+    font-size: 2.75rem;
+  }
+
+  #login {
+    background-color: var(--movie-gold);
+    color: black;
+  }
+
+  #signup {
+    background-color: var(--movie-dark-purple);
+    color: var(--movie-white);
+  }
+</style>

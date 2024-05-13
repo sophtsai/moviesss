@@ -5,6 +5,8 @@ const app = express();
 app.set("views", path.resolve(__dirname, "views/templates"));
 app.set("view engine", "ejs");
 app.use(express.static("public"));
+const bodyParser = require("body-parser");
+app.use(bodyParser.urlencoded({ extended: true }));
 
 require("dotenv").config({ path: path.resolve(__dirname, "./.env") });
 
@@ -53,26 +55,24 @@ const databaseAndCollection = {
   collection: process.env.MONGO_COLLECTION,
 };
 const { MongoClient, ServerApiVersion } = require("mongodb");
+const client = new MongoClient(uri, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  serverApi: ServerApiVersion.v1,
+});
+const database = client.db(databaseAndCollection.db);
+const users = database.collection(databaseAndCollection.collection);
 
 // Retrieve user data by email
 async function getUser(email) {
-  const client = new MongoClient(uri, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    serverApi: ServerApiVersion.v1,
-  });
   try {
     await client.connect();
 
-    const result = await client
-      .db(databaseAndCollection.db)
-      .collection(databaseAndCollection.collection)
-      .findOne({ email: email });
+    const result = await users.findOne({ email: email });
     return result;
   } catch (e) {
     console.error(e);
   } finally {
-    await client.close();
   }
 }
 
@@ -138,12 +138,59 @@ async function getMovieByName(name) {
   return json.results[0];
 }
 
+/********** Express Routes **********/
+
+// Displays Landing Page
 app.get("/", (request, response) => {
   response.render("index");
 });
 
+// Displays Login Page
+app.get("/login", (request, response) => {
+  response.render("login");
+});
+
+// Displays Signup Page
+app.get("/signup", (request, response) => {
+  response.render("signup");
+});
+
+// Handles Sign Up form from signup page
+app.post("/signup", async (request, response) => {
+  const { email } = request.body;
+  const newUser = {
+    email: email,
+    reviews: [],
+  };
+  const client = new MongoClient(uri, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    serverApi: ServerApiVersion.v1,
+  });
+  try {
+    const find = await users.findOne({ email: email });
+    if (find === null) {
+      // add new user
+      await users.insertOne(newUser);
+      response.redirect(`/movies?email=${email}`);
+    } else {
+      // Handle reject
+    }
+  } catch (e) {
+    console.error(e);
+  } finally {
+    await client.close();
+  }
+});
+
 // displaying popular, now playing, and top rated movies
 app.get("/movies", async (request, response) => {
+  let email = request.query.email;
+  if (!email) {
+    response.redirect("/");
+  }
+  let urlEmail = "?email=" + email;
+
   let popularList = await getPopularMovies();
   let popularMovies = populateMovies(popularList);
 
@@ -157,18 +204,26 @@ app.get("/movies", async (request, response) => {
     popularMovies: popularMovies,
     playingMovies: nowPlayingMovies,
     topRatedMovies: topRatedMovies,
+    email: urlEmail,
   };
   response.render("movies", variables);
 });
 
 // displaying user's reviews
 app.get("/myReviews", async (request, response) => {
-  let userData = await getUser("abc@gmail.com"); // TODO: Replace with logged-in user's email
+  let email = request.query.email;
+  if (!email) {
+    response.redirect("/");
+  }
+  let urlEmail = "?email=" + email;
+
+  let userData = await getUser(email);
 
   let reviewList = populateReviews(userData.reviews);
 
   let variables = {
     reviewList: reviewList,
+    email: urlEmail,
   };
   response.render("myReviews", variables);
 });
