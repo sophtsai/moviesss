@@ -56,8 +56,6 @@ const databaseAndCollection = {
 };
 const { MongoClient, ServerApiVersion } = require("mongodb");
 const client = new MongoClient(uri, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
   serverApi: ServerApiVersion.v1,
 });
 const database = client.db(databaseAndCollection.db);
@@ -71,7 +69,7 @@ async function getUser(email) {
     const result = await users.findOne({ email: email });
     return result;
   } catch (e) {
-    console.error(e);
+    return undefined;
   } finally {
   }
 }
@@ -146,13 +144,15 @@ app.get("/", (request, response) => {
 });
 
 // Displays Login Page
-app.get("/login", (request, response) => {
-  response.render("login");
+app.get("/login", async (request, response) => {
+  const invalidLogin = request.query?.invalidLogin === "true";
+  response.render("login", { invalidLogin });
 });
 
 // Displays Signup Page
 app.get("/signup", (request, response) => {
-  response.render("signup");
+  const invalidSignup = request.query?.invalidSignup === "true";
+  response.render("signup", { invalidSignup });
 });
 
 // Handles Sign Up form from signup page
@@ -174,7 +174,8 @@ app.post("/signup", async (request, response) => {
       await users.insertOne(newUser);
       response.redirect(`/movies?email=${email}`);
     } else {
-      // Handle reject
+      // user already exists, throw alert
+      response.redirect(`/signup?invalidSignup=${true}`);
     }
   } catch (e) {
     console.error(e);
@@ -188,6 +189,11 @@ app.get("/movies", async (request, response) => {
   let email = request.query.email;
   if (!email) {
     response.redirect("/");
+  }
+  const user = await getUser(email);
+  if (!user) {
+    // User does not exist, redirect back to login and throw alert
+    response.redirect("/login?invalidLogin=true");
   }
   let urlEmail = "?email=" + email;
 

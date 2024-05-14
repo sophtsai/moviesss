@@ -1,21 +1,83 @@
 <!DOCTYPE html>
 <html>
-  <header>
+  <head>
     <title>Movie Review Form</title>
     <%- include('./styles'); %>
-  </header>
-  <body>
-    <script>
-      function validateForm() {
-        const email = document.getElementById("emailInput").value;
-        if (email === "") {
-          alert("Enter in a valid email");
-          return false;
-        }
-
-        return true;
+    <style>
+      body {
+        background-color: var(--movie-blue);
+        display: flex;
+        text-align: center;
       }
-    </script>
+
+      .main-container {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .main-container h1 {
+        font-size: 5rem;
+        width: 550px;
+        padding-top: 50px;
+        padding-bottom: 100px;
+      }
+
+      .form-container {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .input {
+        text-align: left;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .input p {
+        margin: 0;
+        padding: 0 0 5px 7px;
+      }
+
+      .input input {
+        font-family: "Montserrat";
+        font-size: 2rem;
+        width: 95%;
+        height: 75px;
+        border-radius: 15px;
+        margin-bottom: 100px;
+        padding-left: 10px;
+      }
+
+      .btn-container {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .btn-container button {
+        font-family: "Limelight", "Times New Roman", serif;
+        border-radius: 15px;
+        border-style: none;
+        height: 50px;
+        padding: 5px;
+        cursor: pointer;
+        width: 150px;
+        font-size: 1.5rem;
+      }
+
+      #signup {
+        background-color: var(--movie-dark-purple);
+        color: var(--movie-white);
+      }
+    </style>
+  </head>
+  <body>
     <div class="main-container">
       <h1>Moviesss</h1>
       <form
@@ -35,79 +97,22 @@
         </div>
       </form>
     </div>
+    <script>
+       window.onload = function() {
+        if (<%- JSON.stringify(invalidSignup) %>) {
+          alert('Email is taken. Please use another one.');
+        }
+      };
+
+      function validateForm() {
+        const email = document.getElementById("emailInput").value;
+        if (email === "") {
+          alert("Enter in a valid email");
+          return false;
+        }
+
+        return true;
+      }
+    </script>
   </body>
 </html>
-
-<style>
-  body {
-    background-color: var(--movie-blue);
-    display: flex;
-    text-align: center;
-  }
-
-  .main-container {
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-  }
-
-  .main-container h1 {
-    font-size: 5rem;
-    width: 550px;
-    padding-top: 50px;
-    padding-bottom: 100px;
-  }
-
-  .form-container {
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-  }
-
-  .input {
-    text-align: left;
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-  }
-
-  .input p {
-    margin: 0;
-    padding: 0 0 5px 7px;
-  }
-
-  .input input {
-    font-family: "Montserrat";
-    font-size: 2rem;
-    width: 95%;
-    height: 75px;
-    border-radius: 15px;
-    margin-bottom: 100px;
-    padding-left: 10px;
-  }
-
-  .btn-container {
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-  }
-
-  .btn-container button {
-    font-family: "Limelight", "Times New Roman", serif;
-    border-radius: 15px;
-    border-style: none;
-    height: 50px;
-    padding: 5px;
-    cursor: pointer;
-    width: 150px;
-    font-size: 1.5rem;
-  }
-
-  #signup {
-    background-color: var(--movie-dark-purple);
-    color: var(--movie-white);
-  }
-</style>
