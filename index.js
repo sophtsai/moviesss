@@ -15,7 +15,6 @@ function populateMovies(email, movieList) {
 
   movieList.forEach((movie) => {
     let moviePoster = getImage(movie);
-    // "https://image.tmdb.org/t/p/w500" + movie.poster_path;
     displayMovies += `<div class="movieCard"><a href="/reviewForm?email=${email}&title=${movie.title}"><img src="${moviePoster}"/><p>${movie.title}</p></a></div>`;
   });
 
@@ -35,10 +34,13 @@ function populateReviews(reviewList) {
 function populateReviews(reviewList) {
   let displayReviews = `<div class="listContainer">`;
 
-  reviewList.forEach((review) => {
-    displayReviews += `<div class="reviewCard"><img src="${review.movieImage}"/><div class="reviewInfo"><h3><b>${review.movieTitle}</b></h3><div><b>Date Reviewed: </b>${review.reviewDate}</div><div class="reviewTitle"><b>Review:</b></div><div>${review.review}</div></div></div>`;
-  });
-
+  if (reviewList.length == 0) {
+    displayReviews += "<h3><b>No Movies Reviewed</b></h3>";
+  } else {
+    reviewList.forEach((review) => {
+      displayReviews += `<div class="reviewCard"><img src="${review.movieImage}"/><div class="reviewInfo"><h3><b>${review.movieTitle}</b></h3><div><b>Date Reviewed: </b>${review.reviewDate}</div><div class="reviewTitle"><b>Review:</b></div><div>${review.review}</div></div></div>`;
+    });
+  }
   return (displayReviews += "</div>");
 }
 
