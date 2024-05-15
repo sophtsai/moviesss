@@ -246,19 +246,33 @@ app.get("/reviewForm", async (request, response) => {
     movieTitle: movie.title,
     releaseDate: new Date(movie.release_date).toLocaleDateString(),
     desc: movie.overview,
-    email,
+    email: email,
   };
   response.render("reviewForm", variables);
 });
 
 // send review to backend
-app.post("/reviewForm", (request, response) => {
-  let movie = request.query.movieTitle; // retrieve movie title from form data
+app.post("/reviewForm", async (request, response) => {
+  let movieTitle = request.query.movieTitle;
+  let movieImage = getImage(await getMovieByName(movieTitle));
+  let email = request.query.email;
+  let review = request.body.review;
 
-  // TODO: add review to user
-  /* Implement here */
-
-  response.render("reviewConfirmation", { movieTitle: movie });
+  await database.collection('moviesss').updateOne(
+    { email: email},
+    {
+      $push: {
+        reviews: 
+          {
+            movieImage: movieImage,
+            movieTitle: movieTitle,
+            reviewDate: new Date().toLocaleDateString(),
+            review: review
+          }
+      }
+    }
+  );
+  response.render("reviewConfirmation", { movieTitle: movieTitle, email: email });
 });
 
 console.log(`Web server started and running at http://localhost:${portNumber}`);

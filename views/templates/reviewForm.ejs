@@ -11,7 +11,7 @@
     <div class="inner">
       <form
         method="post"
-        action="/reviewForm?movieTitle=<%= movieTitle %>"
+        action="/reviewForm?email=<%- email %>&movieTitle=<%= movieTitle %>"
         class="form-container"
       >
         <h1 id="form-header">Movie Review Form</h1>
@@ -22,6 +22,7 @@
             width="15%"
             height="auto"
             class="img"
+            name="movieImage"
           />
           <div class="movie-info">
             <input type="hidden" name="movieTitle" value="<%= movieTitle %>" />
@@ -31,7 +32,7 @@
         </div>
 
         <label for="review" class="info">Review</label>
-        <textarea col="10" rows="8" id="text-field"></textarea>
+        <textarea col="10" rows="8" id="review" name="review"></textarea>
 
         <div class="btn-container">
           <button type="reset" id="reset">Clear Review</button>
@@ -105,7 +106,7 @@
     text-wrap: wrap;
   }
 
-  #text-field {
+  #review {
     border-radius: 20px;
     margin-top: 5px;
     padding: 10px;
